@@ -48,7 +48,7 @@ func main() {
 
 	bucket := cluster.Bucket(*bucketName)
 
-	if err := bucket.WaitUntilReady(5*time.Second, nil); err != nil {
+	if err := bucket.WaitUntilReady(20*time.Second, nil); err != nil {
 		fmt.Println("failed to wait for ready bucket:", err)
 		os.Exit(1)
 	}
