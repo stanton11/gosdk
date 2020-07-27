@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"time"
 
 	"github.com/couchbase/gocb/v2"
 )
@@ -14,13 +16,14 @@ func main() {
 	username := flag.String("username", "", "Username")
 	password := flag.String("password", "", "Password")
 	cafile := flag.String("cafile", "", "CA filename")
+	bucketName := flag.String("bucket", "", "Bucket name")
 
 	flag.Parse()
 
 	ca, err := ioutil.ReadFile(*cafile)
 	if err != nil {
 		fmt.Println("failed to load CA:", err)
-		return
+		os.Exit(1)
 	}
 
 	caCerts := x509.NewCertPool()
@@ -34,7 +37,16 @@ func main() {
 		},
 	}
 
-	if _, err := gocb.Connect(*connection, options); err != nil {
+	cluster, err := gocb.Connect(*connection, options)
+	if err != nil {
 		fmt.Println("failed to open connection:", err)
+		os.Exit(1)
+	}
+
+	bucket := cluster.Bucket(*bucketName)
+
+	if err := bucket.WaitUntilReady(5*time.Second, nil); err != nil {
+		fmt.Println("failed to wait for ready bucket:", err)
+		os.Exit(1)
 	}
 }
