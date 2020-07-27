@@ -25,7 +25,7 @@ func main() {
                 Password: *password,
         }
 
-	if *cafile == "" {
+	if *cafile != "" {
 		ca, err := ioutil.ReadFile(*cafile)
 		if err != nil {
 			fmt.Println("failed to load CA:", err)
