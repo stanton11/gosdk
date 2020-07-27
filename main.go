@@ -20,21 +20,24 @@ func main() {
 
 	flag.Parse()
 
-	ca, err := ioutil.ReadFile(*cafile)
-	if err != nil {
-		fmt.Println("failed to load CA:", err)
-		os.Exit(1)
-	}
+        options := gocb.ClusterOptions{
+                Username: *username,
+                Password: *password,
+        }
 
-	caCerts := x509.NewCertPool()
-	caCerts.AppendCertsFromPEM(ca)
+	if *cafile == "" {
+		ca, err := ioutil.ReadFile(*cafile)
+		if err != nil {
+			fmt.Println("failed to load CA:", err)
+			os.Exit(1)
+		}
 
-	options := gocb.ClusterOptions{
-		Username: *username,
-		Password: *password,
-		SecurityConfig: gocb.SecurityConfig{
+		caCerts := x509.NewCertPool()
+		caCerts.AppendCertsFromPEM(ca)
+
+		options.SecurityConfig = gocb.SecurityConfig{
 			TLSRootCAs: caCerts,
-		},
+		}
 	}
 
 	cluster, err := gocb.Connect(*connection, options)
