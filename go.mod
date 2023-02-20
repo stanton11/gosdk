@@ -1,4 +1,4 @@
-module github.com/spjmurray/gosdk
+module github.com/stanton11/gosdk
 
 go 1.13
 

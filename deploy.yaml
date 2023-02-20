@@ -15,18 +15,18 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - name: gosdk
-        image: golang:1.13.3
-        command:
-        - sh
-        - -c
-        args:
-        - mkdir test; cd test; go mod init test; go run github.com/spjmurray/gosdk -connection couchbases://test-couchbase-y5uv6-srv.default -username Administrator -password password -cafile /etc/gosdk/ca.pem
-        volumeMounts:
-        - name: etc
-          mountPath: /etc/gosdk
-          readOnly: true
+        - name: gosdk
+          image: golang:1.13.3
+          command:
+            - sh
+            - -c
+          args:
+            - mkdir test; cd test; go mod init test; go run github.com/stanton11/gosdk -connection couchbases://test-couchbase-y5uv6-srv.default -username Administrator -password password -cafile /etc/gosdk/ca.pem
+          volumeMounts:
+            - name: etc
+              mountPath: /etc/gosdk
+              readOnly: true
       volumes:
-      - name: etc
-        secret:
-          secretName: gosdk
+        - name: etc
+          secret:
+            secretName: gosdk
